@@ -1,0 +1,45 @@
+{
+  "name": "lyre/file",
+  "description": "File management with filament",
+  "keywords": [
+    "php",
+    "github",
+    "laravel",
+    "Open Source",
+    "lyre",
+    "content",
+    "sections",
+    "pages",
+    "crud",
+    "relationships",
+    "resources",
+    "simple",
+    "file",
+    "files",
+    "media",
+    "library",
+    "laravel 10",
+    "laravel 11",
+    "laravel 12"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Lyre\\File\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "kigathi-chege",
+      "email": "chegekigathi@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^8.2",
+    "awcodes/filament-tiptap-editor": "^3.5",
+    "filament/filament": "^3.3",
+    "codeat3/blade-google-material-design-icons": "^1.20",
+    "intervention/image-laravel": "^1.5",
+    "lyre/lyre": "^1.1"
+  }
+}
