@@ -1,13 +1,13 @@
 <?php
 
-namespace Lyre\Content\Filament\Plugins;
+namespace Lyre\File\Filament\Plugins;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Symfony\Component\Finder\Finder;
 use Filament\Resources\Resource;
 
-class LyreContentFilamentPlugin implements Plugin
+class LyreFileFilamentPlugin implements Plugin
 {
     public function getId(): string
     {

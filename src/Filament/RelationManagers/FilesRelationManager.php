@@ -2,7 +2,7 @@
 
 namespace Lyre\File\Filament\RelationManagers;
 
-use Lyre\Content\Filament\Resources\FileResource;
+use Lyre\File\Filament\Resources\FileResource;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

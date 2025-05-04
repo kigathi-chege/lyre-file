@@ -23,7 +23,7 @@
     "laravel 12"
   ],
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "autoload": {
     "psr-4": {
       "Lyre\\File\\": "src/"
@@ -43,5 +43,12 @@
     "codeat3/blade-google-material-design-icons": "^1.20",
     "intervention/image-laravel": "^1.5",
     "lyre/lyre": "^1.1"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Lyre\\File\\Providers\\LyreFileServiceProvider"
+      ]
+    }
   }
 }

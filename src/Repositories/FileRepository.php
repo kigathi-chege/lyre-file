@@ -28,6 +28,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         if (strpos($mimeType, 'image') !== false) {
             $resizedPaths = generate_resized_versions($file, $mimeType);
         }
+
         $file = File::firstOrCreate(
             ['checksum' => $checksum],
             [

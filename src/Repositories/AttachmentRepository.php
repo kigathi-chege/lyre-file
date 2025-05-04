@@ -3,7 +3,7 @@
 namespace Lyre\File\Repositories;
 
 use Lyre\Repository;
-use App\Models\Attachment;
+use Lyre\File\Models\Attachment;
 use Lyre\File\Repositories\Contracts\AttachmentRepositoryInterface;
 
 class AttachmentRepository extends Repository implements AttachmentRepositoryInterface
