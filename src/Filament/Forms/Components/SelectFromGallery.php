@@ -1,6 +1,6 @@
 <?php
 
-namespace Lyre\File\Forms\Components;
+namespace Lyre\File\Filament\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Field;
@@ -8,20 +8,18 @@ use Filament\Forms\Components\Field;
 class SelectFromGallery extends Field
 {
     protected bool | Closure $multiple = false;
-
+    protected string $relationship;
     protected array $galleryFiles = [];
     protected array $selectedFiles = [];
     protected int $galleryPage = 1;
     protected int $perPage = 8;
 
-    protected string $view = 'lyre.content::forms.components.select-from-gallery';
+    protected string $view = 'lyre.file::forms.components.select-from-gallery';
 
     public static function make(string $name): static
     {
         $static = app(static::class, ['name' => $name]);
         $static->configure();
-
-        $static->galleryFiles();
 
         return $static;
     }
@@ -37,6 +35,12 @@ class SelectFromGallery extends Field
                 $component->selectedFiles = $record->files->toArray();
             }
         });
+
+        $this->saveRelationshipsUsing(static function ($component, $record, $state) {
+            if (!empty($state)) {
+                $record->attachFile($state);
+            }
+        });
     }
 
     public function multiple(bool| Closure  $condition = true): static
@@ -45,23 +49,9 @@ class SelectFromGallery extends Field
         return $this;
     }
 
-    public function getMultiple($sth = false): ?bool
+    public function getMultiple(): ?bool
     {
         return $this->evaluate($this->multiple);
-    }
-
-    public function galleryFiles(int $perPage = 8, int $page = 1): static
-    {
-        $page = $this->galleryPage ?? 1;
-        $fileRepository = app(\Lyre\Content\Repositories\Contracts\FileRepositoryInterface::class);
-        $this->galleryFiles = $fileRepository->paginate($this->perPage, $page)->all();
-
-        return $this;
-    }
-
-    public function getGalleryFiles(): ?array
-    {
-        return $this->evaluate($this->galleryFiles);
     }
 
     public function selectedFiles($files): static
@@ -74,22 +64,5 @@ class SelectFromGallery extends Field
     public function getSelectedFiles(): ?array
     {
         return $this->evaluate($this->selectedFiles);
-    }
-
-    public function getGalleryFilesJson(): ?string
-    {
-        $galleryFiles = $this->evaluate($this->galleryFiles);
-        return $galleryFiles ? json_encode($galleryFiles) : null;
-    }
-
-    public function galleryPage(int $page): static
-    {
-        $this->galleryPage = $page;
-        return $this;
-    }
-
-    public function getGalleryPage(): ?int
-    {
-        return $this->evaluate($this->galleryPage);
     }
 }

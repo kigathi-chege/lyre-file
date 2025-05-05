@@ -2,17 +2,14 @@
 
 namespace Lyre\File\Providers;
 
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\File;
-use Filament\Facades\Filament;
 use Illuminate\Support\ServiceProvider;
-use Lyre\File\Console\Commands\GenerateFilamentResources;
-use Lyre\Facades\Lyre;
 use Lyre\Observer;
-use Lyre\Services\ModelService;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Illuminate\Support\Str;
+use Livewire\Livewire;
+use Lyre\File\Livewire\FileGallery;
 
 class LyreFileServiceProvider extends ServiceProvider
 {
@@ -36,6 +33,8 @@ class LyreFileServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../resources/public' => public_path('lyre/file'),
         ]);
+
+        Livewire::component('file-gallery', FileGallery::class);
     }
 
     public function registerRepositories($app)
