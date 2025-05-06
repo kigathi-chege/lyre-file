@@ -18,6 +18,12 @@ trait HasFile
             ->where('attachments.attachable_type', self::class);
     }
 
+    /**
+     * @param int[] $fileIds
+     * @return Attachment[]
+     * 
+     * This function deletes all attachments and creates new ones from fileIds
+     */
     public function attachFile($fileIds)
     {
         $this->attachments()->delete();

@@ -11,6 +11,12 @@ Lyre File is a [Lyre](https://packagist.org/packages/lyre/lyre) addon for simple
 composer require lyre/file
 ```
 
+### Publish Assets
+
+```bash
+php artisan vendor:publish --provider="Lyre\File\Providers\LyreFileServiceProvider"
+```
+
 After installation, add the `HasFile` trait to all the relevant models:
 
 ```php
