@@ -161,7 +161,8 @@ class FileResource extends Resource
                             $action->success();
                         }),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array
