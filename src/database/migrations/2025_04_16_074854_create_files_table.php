@@ -28,6 +28,12 @@ return new class extends Migration
                 $table->string('storage')->default("local");
             });
         }
+
+        if (!Schema::hasColumn('files', 'original_name')) {
+            Schema::table('files', function (Blueprint $table) {
+                $table->string('original_name')->nullable();
+            });
+        }
     }
 
     /**

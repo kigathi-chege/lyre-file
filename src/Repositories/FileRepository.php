@@ -21,7 +21,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         return $this->resource ? new $this->resource($thisModel) : $thisModel;
     }
 
-    public function uploadFile($file, $name = null, $description = null)
+    public function uploadFile($file, $name = null, $description = null, $originalName = null)
     {
         $checksum = hash_file('md5', $file->getRealPath());
         $mimeType = $file->getMimeType();
@@ -33,6 +33,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
             ['checksum' => $checksum],
             [
                 'name' => $name ?? get_file_name_without_extension($file),
+                'original_name' => $originalName ?? \Lyre\File\Actions\NamesGenerator::generate(["delimiter" => "-"]),
                 'path' => $file->store("uploads/{$mimeType}", config('filesystems.default')),
                 'path_sm' =>  $resizedPaths['sm'] ?? null,
                 'path_lg' =>  $resizedPaths['lg'] ?? null,

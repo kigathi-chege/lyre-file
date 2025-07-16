@@ -18,20 +18,7 @@ class CreateFile extends CreateRecord
      */
     protected function handleRecordCreation(array $data): Model
     {
-        $absolutePath = storage_path('app/public/' . $data['file']);
-
-        $uploadedFile = new UploadedFile(
-            $absolutePath,
-            basename($absolutePath),
-            mime_content_type($absolutePath),
-            null,
-            true
-        );
-
-        $fileRepository = app(\Lyre\File\Repositories\Contracts\FileRepositoryInterface::class);
-        $record = $fileRepository->uploadFile($uploadedFile, $data['name'] ?? null, $data['description'] ?? null);
-
-        unlink($absolutePath);
+        $record = \Lyre\File\Actions\CreateFile::make($data);
 
         if (
             static::getResource()::isScopedToTenant() &&

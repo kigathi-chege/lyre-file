@@ -43,6 +43,7 @@ class FileResource extends Resource
                     ->removeUploadedFileButtonPosition('right')
                     ->uploadButtonPosition('left')
                     ->uploadProgressIndicatorPosition('left')
+                    ->storeFileNamesIn('attachment_file_names')
                     ->previewable(true)
                     ->multiple(false)
                     ->imageEditor()

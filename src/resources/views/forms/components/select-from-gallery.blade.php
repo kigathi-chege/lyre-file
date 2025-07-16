@@ -32,7 +32,7 @@
 
         <x-filament::modal id="select-file" width="6xl">
             <x-slot name="heading">
-                Select File
+                {{-- Select File --}}
             </x-slot>
             @livewire('file-gallery', ['selectedFiles' => $getSelectedFiles(), 'multiple' => $multiple])
         </x-filament::modal>

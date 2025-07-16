@@ -18,7 +18,6 @@ class File extends Model
         "path_md",
         "path_lg",
         "size",
-        "extension",
         "mimetype",
         "usagecount",
         "checksum",
