@@ -64,15 +64,38 @@
                         <div class="absolute inset-0 hover:bg-black hover:opacity-25 rounded-md"
                             :class="tempState?.includes({{ $file['id'] }}) ? 'bg-green-600 opacity-25' : 'bg-transparent'">
                         </div>
-                        @if (isset($file['extension']) && ($file['extension'] == 'pdf' || $file['extension'] == 'xlsx'))
-                            <div class="flex flex-col items-center justify-center gap-4 h-full w-full">
-                                <img src="{{ asset($file['extension'] == 'pdf' ? 'pdf.png' : 'xlsx.png') }}"
-                                    alt="PDF" class="h-48 w-48">
-                                <p class="">{{ $file['name'] }}</p>
-                            </div>
-                        @else
+
+                        @php
+                            $ext = strtolower($file['extension'] ?? '');
+                        @endphp
+
+                        @if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp']))
                             <img src="{{ $file['link'] }}" alt="{{ $file['name'] }}"
                                 class="w-full h-full object-cover rounded-md">
+                        @elseif ($ext === 'pdf')
+                            <iframe src="{{ $file['link'] }}" class="w-full h-full rounded-md" frameborder="0"></iframe>
+                        @elseif (in_array($ext, ['mp4', 'webm']))
+                            <video controls class="w-full h-full object-cover rounded-md">
+                                <source src="{{ $file['link'] }}" type="video/{{ $ext }}">
+                                Your browser does not support the video tag.
+                            </video>
+                        @elseif ($ext === 'xlsx')
+                            <div class="flex flex-col items-center justify-center h-full p-4 text-center">
+                                <img src="{{ asset('xlsx.png') }}" alt="Excel" class="w-16 h-16 mb-2">
+                                <p class="text-sm">{{ $file['name'] }}</p>
+                                <p class="text-xs text-gray-500">Excel file - no preview</p>
+                            </div>
+                        @elseif ($ext === 'md')
+                            <div class="flex flex-col items-center justify-center h-full p-4 text-center overflow-auto">
+                                <img src="{{ asset('md.png') }}" alt="Markdown" class="w-16 h-16 mb-2">
+                                <p class="text-sm">{{ $file['name'] }}</p>
+                                <p class="text-xs text-gray-500">Markdown preview coming soon</p>
+                            </div>
+                        @else
+                            <div class="flex flex-col items-center justify-center gap-4 h-full w-full">
+                                <img src="{{ asset("{$ext}.png") }}" alt="{{ $ext }}" class="h-20 w-20">
+                                <p class="text-sm">{{ $file['name'] }}</p>
+                            </div>
                         @endif
                     </div>
                 @endforeach
@@ -85,6 +108,7 @@
 
         <div class="mt-4 flex justify-between" id="sth">
             <div class="flex gap-4">
+                {{-- TODO: Kigathi - July 19 2025 - Implement actual pagination with page numbers --}}
                 <x-filament::button wire:click="prevPage" color="gray"
                     x-bind:disabled="!previousPage">Previous</x-filament::button>
                 <x-filament::button wire:click="nextPage" color="gray"

@@ -18,6 +18,7 @@
             <div class="inset-0 flex flex-row items-center justify-start px-3 py-1/5 text-gray-950 font-normal">
                 <template x-if="selectedFiles.length > 0">
                     <div class="flex flex-row items-center justify-center gap-2 flex-wrap">
+                        {{-- TODO: Kigathi - July 19 2025 - Implement file previews as in file-gallery.blade --}}
                         <template x-for="file in selectedFiles">
                             <img :src="file.link" alt="i" class="h-16 w-16 rounded-md object-cover">
                         </template>
