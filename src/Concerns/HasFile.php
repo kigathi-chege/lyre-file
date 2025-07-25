@@ -39,7 +39,21 @@ trait HasFile
         if (!is_array($fileIds)) {
             $fileIds = [$fileIds];
         }
-        $this->attachments()->delete();
+        $this->detachFiles();
         return $this->attachments()->createMany(array_map(fn($fileId) => ['file_id' => $fileId], $fileIds));
+    }
+
+    public function detachFiles()
+    {
+        $this->attachments()->delete();
+    }
+
+    public function deleteFiles()
+    {
+        $fileRepository = app(\Lyre\File\Repositories\Contracts\FileRepositoryInterface::class);
+
+        $this->attachments()->with('file')->get()->each(function ($attachment) use ($fileRepository) {
+            $fileRepository->delete($attachment->file?->slug);
+        });
     }
 }

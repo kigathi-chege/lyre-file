@@ -18,8 +18,16 @@ class CreateFile
             true
         );
 
-        $fileRepository = app(\Lyre\File\Repositories\Contracts\FileRepositoryInterface::class);
-        $record = $fileRepository->uploadFile($uploadedFile, $data['name'] ?? null, $data['description'] ?? null, $data['attachment_file_names'] ?? null);
+        // $fileRepository = app(\Lyre\File\Repositories\Contracts\FileRepositoryInterface::class);
+        // $record = $fileRepository->uploadFile($uploadedFile, $data['name'] ?? null, $data['description'] ?? null, $data['attachment_file_names'] ?? null);
+
+        $record = fileRepository()
+            ->uploadFile(
+                $uploadedFile,
+                $data['name'] ?? null,
+                $data['description'] ?? null,
+                $data['attachment_file_names'] ?? null
+            );
 
         unlink($absolutePath);
 

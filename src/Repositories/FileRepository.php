@@ -2,6 +2,7 @@
 
 namespace Lyre\File\Repositories;
 
+use Lyre\Exceptions\CommonException;
 use Lyre\Repository;
 use Lyre\File\Models\File;
 use Lyre\File\Repositories\Contracts\FileRepositoryInterface;
@@ -25,31 +26,70 @@ class FileRepository extends Repository implements FileRepositoryInterface
     {
         $checksum = hash_file('md5', $file->getRealPath());
         $mimeType = $file->getMimeType();
+
         if (strpos($mimeType, 'image') !== false) {
             $resizedPaths = generate_resized_versions($file, $mimeType);
         }
 
-        $file = File::firstOrCreate(
+        $baseName = $name ?? get_file_name_without_extension($file);
+        $extension = get_file_extension($file);
+        $storageDisk = config('filesystems.default');
+        $directory = "uploads/{$mimeType}";
+        $storedName = $baseName;
+
+        // Check for name conflict
+        $counter = 0;
+        while (\Illuminate\Support\Facades\Storage::disk($storageDisk)->exists("{$directory}/{$storedName}.{$extension}")) {
+            $counter++;
+            $storedName = $baseName . '-' . \Illuminate\Support\Str::random(4);
+        }
+
+        $filePath = $file->storeAs($directory, "{$storedName}.{$extension}", $storageDisk);
+
+        $fileRecord = File::firstOrCreate(
             ['checksum' => $checksum],
             [
-                'name' => $name ?? get_file_name_without_extension($file),
+                'name' => $storedName,
                 'original_name' => $originalName ?? \Lyre\File\Actions\NamesGenerator::generate(["delimiter" => "-"]),
-                'path' => $file->store("uploads/{$mimeType}", config('filesystems.default')),
-                'path_sm' =>  $resizedPaths['sm'] ?? null,
-                'path_lg' =>  $resizedPaths['lg'] ?? null,
-                'path_md' =>  $resizedPaths['md'] ?? null,
+                'path' => $filePath,
+                'path_sm' => $resizedPaths['sm'] ?? null,
+                'path_md' => $resizedPaths['md'] ?? null,
+                'path_lg' => $resizedPaths['lg'] ?? null,
                 'size' => $file->getSize(),
-                'extension' => get_file_extension($file),
+                'extension' => $extension,
                 'mimetype' => $mimeType,
-                'storage' => config('filesystems.default'),
+                'storage' => $storageDisk,
                 'description' => $description
             ]
         );
-        if (!$file->wasRecentlyCreated) {
-            $file->increment('usagecount');
+
+        if (!$fileRecord->wasRecentlyCreated) {
+            $fileRecord->increment('usagecount');
         } else {
-            $file->update(['link' => route('stream', ['slug' => $file->slug, 'extension' => $file->extension])]);
+            $fileRecord->update([
+                'link' => route('stream', ['slug' => $fileRecord->slug, 'extension' => $fileRecord->extension]),
+            ]);
         }
-        return $file;
+
+        return $fileRecord;
+    }
+
+    public function delete($slug)
+    {
+        $file = File::where('slug', $slug)->first();
+
+        if (! $file) {
+            throw CommonException::fromMessage("File with slug {$slug} not found.");
+        }
+
+        \Lyre\File\Models\Attachment::where('file_id', $file->id)->delete();
+
+        foreach (['path', 'path_sm', 'path_md', 'path_lg'] as $variant) {
+            if ($file->$variant) {
+                \Illuminate\Support\Facades\Storage::disk($file->storage)->delete($file->$variant);
+            }
+        }
+
+        $file->delete();
     }
 }

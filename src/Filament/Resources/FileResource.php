@@ -150,14 +150,14 @@ class FileResource extends Resource
                         ->action(function ($records, $action): void {
                             collect($records)->each(fn(File $record) => $record->attachments()->delete());
 
-                            $action->process(static fn(Collection $records) => $records->each(fn(Model $record) => $record->delete()));
+                            $action->process(static fn(Collection $records) => $records->each(fn(Model $record) => fileRepository()->delete($record->slug)));
 
-                            foreach ($records as $record) {
-                                unlink(storage_path('app/private/' . $record->path));
-                                unlink(storage_path('app/private/' . $record->path_sm));
-                                unlink(storage_path('app/private/' . $record->path_md));
-                                unlink(storage_path('app/private/' . $record->path_lg));
-                            }
+                            // foreach ($records as $record) {
+                            //     unlink(storage_path('app/private/' . $record->path));
+                            //     unlink(storage_path('app/private/' . $record->path_sm));
+                            //     unlink(storage_path('app/private/' . $record->path_md));
+                            //     unlink(storage_path('app/private/' . $record->path_lg));
+                            // }
 
                             $action->success();
                         }),
