@@ -34,6 +34,9 @@ class FilesRelationManager extends RelationManager
             ->columns(FileResource::table($table)->getColumns())
             ->filters([
                 //
-            ]);
+            ])
+            ->striped()
+            ->deferLoading()
+            ->defaultSort('created_at', 'desc');
     }
 }

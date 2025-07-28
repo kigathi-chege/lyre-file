@@ -163,6 +163,8 @@ class FileResource extends Resource
                         }),
                 ]),
             ])
+            ->striped()
+            ->deferLoading()
             ->defaultSort('created_at', 'desc');
     }
 
