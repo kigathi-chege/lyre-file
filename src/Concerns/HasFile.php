@@ -31,7 +31,7 @@ trait HasFile
     /**
      * @param int[] $fileIds
      * @return Attachment[]
-     * 
+     *
      * This function deletes all attachments and creates new ones from fileIds
      */
     public function attachFile(array | int $fileIds)
@@ -50,10 +50,26 @@ trait HasFile
 
     public function deleteFiles()
     {
-        $fileRepository = app(\Lyre\File\Repositories\Contracts\FileRepositoryInterface::class);
+        $this->attachments()->with('file')->get()->each(function ($attachment) {
+            $file = $attachment->file;
 
-        $this->attachments()->with('file')->get()->each(function ($attachment) use ($fileRepository) {
-            $fileRepository->delete($attachment->file?->slug);
+            if (!$file) {
+                $attachment->delete();
+                return;
+            }
+
+            $relatedAttachmentsCount = Attachment::where('file_id', $file->id)
+                ->where(function ($query) {
+                    $query->where('attachable_type', '!=', static::class)
+                        ->orWhere('attachable_id', '!=', $this->id);
+                })
+                ->count();
+
+            if ($relatedAttachmentsCount === 0) {
+                fileRepository()->delete($file->slug);
+            }
+
+            $attachment->delete();
         });
     }
 }

@@ -9,6 +9,11 @@ class Attachment extends Model
 {
     use HasFactory;
 
+    public function attachable()
+    {
+        return $this->morphTo();
+    }
+
     public function file()
     {
         return $this->belongsTo(File::class);
