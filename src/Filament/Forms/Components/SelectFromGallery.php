@@ -41,6 +41,8 @@ class SelectFromGallery extends Field
                 $record->attachFile($state);
             }
         });
+
+        $this->dehydrated(false);
     }
 
     public function multiple(bool| Closure  $condition = true): static
