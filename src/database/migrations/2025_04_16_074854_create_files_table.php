@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('files')) {
-            Schema::create('files', function (Blueprint $table) {
-                basic_fields($table, 'files');
+        $prefix = config('lyre.table_prefix');
+        $tableName = $prefix . 'files';
+
+        if (!Schema::hasTable($tableName)) {
+            Schema::create($tableName, function (Blueprint $table) use ($tableName, $prefix) {
+                basic_fields($table, $tableName);
                 $table->string('name')->unique();
                 $table->text('path')->nullable();
                 $table->text('path_sm')->nullable();
@@ -29,8 +32,8 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasColumn('files', 'original_name')) {
-            Schema::table('files', function (Blueprint $table) {
+        if (!Schema::hasColumn($tableName, 'original_name')) {
+            Schema::table($tableName, function (Blueprint $table) {
                 $table->string('original_name')->nullable();
             });
         }
@@ -41,6 +44,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('files');
+        $prefix = config('lyre.table_prefix');
+        $tableName = $prefix . 'files';
+
+        Schema::dropIfExists($tableName);
     }
 };

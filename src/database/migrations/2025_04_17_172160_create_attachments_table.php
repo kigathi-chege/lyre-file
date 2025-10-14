@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('attachments')) {
-            Schema::create('attachments', function (Blueprint $table) {
+        $prefix = config('lyre.table_prefix');
+        $tableName = $prefix . 'attachments';
+
+        if (!Schema::hasTable($tableName)) {
+            Schema::create($tableName, function (Blueprint $table) use ($tableName, $prefix) {
                 $table->id();
                 $table->timestamps();
                 $table->morphs('attachable');
                 $table->tinyInteger('order')->default(0);
-                $table->foreignId('file_id')->nullable()->constrained();
+                $table->foreignId('file_id')->nullable()->constrained($prefix . 'files');
             });
         }
     }
@@ -27,6 +30,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attachments');
+        $prefix = config('lyre.table_prefix');
+        $tableName = $prefix . 'attachments';
+
+        Schema::dropIfExists($tableName);
     }
 };
