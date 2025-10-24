@@ -15,8 +15,9 @@ trait HasFile
 
     public function files()
     {
+        $prefix = config('lyre.table_prefix');
         return $this->hasManyThrough(File::class, Attachment::class, 'attachable_id', 'id', 'id', 'file_id')
-            ->where('attachments.attachable_type', self::class);
+            ->where($prefix . 'attachments.attachable_type', self::class);
     }
 
     public function getFeaturedImageAttribute()
