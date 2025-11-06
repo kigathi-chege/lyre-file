@@ -48,29 +48,53 @@ if (!function_exists('get_file_extension')) {
 if (!function_exists('generate_resized_versions')) {
     function generate_resized_versions($file, $mimeType)
     {
-        $image = \Intervention\Image\Laravel\Facades\Image::read($file->getRealPath());
-        $disk = config('filesystems.default');
+        try {
+            // Check if format is supported by GD
+            $extension = strtolower(pathinfo($file->getRealPath(), PATHINFO_EXTENSION) ?: $file->getClientOriginalExtension());
+            $unsupportedFormats = ['avif']; // AVIF is not supported by GD
 
-        $variants = [];
-        $sizes = [
-            'sm' => 150,
-            'md' => 300,
-            'lg' => 600,
-        ];
+            if (in_array($extension, $unsupportedFormats)) {
+                // Skip resizing for unsupported formats
+                return [];
+            }
 
-        foreach ($sizes as $label => $width) {
-            $resized = $image->resize($width, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            // Skip very large images to prevent memory issues
+            // $fileSize = filesize($file->getRealPath());
+            // if ($fileSize > 5 * 1024 * 1024) { // 5MB limit
+            //     return [];
+            // }
 
-            $filename = 'uploads/' . $mimeType . '/' . \Illuminate\Support\Str::uuid() . "_{$label}." . $file->getClientOriginalExtension();
+            $image = \Intervention\Image\Laravel\Facades\Image::read($file->getRealPath());
+            $disk = config('filesystems.default');
 
-            \Illuminate\Support\Facades\Storage::disk($disk)->put($filename, (string) $resized->encode());
+            $variants = [];
+            $sizes = [
+                'sm' => 150,
+                'md' => 300,
+                'lg' => 600,
+            ];
 
-            $variants[$label] = $filename;
+            foreach ($sizes as $label => $width) {
+                $resized = $image->scale(width: $width);
+
+                $filename = 'uploads/' . $mimeType . '/' . \Illuminate\Support\Str::uuid() . "_{$label}." . $file->getClientOriginalExtension();
+
+                \Illuminate\Support\Facades\Storage::disk($disk)->put($filename, (string) $resized->encode());
+
+                $variants[$label] = $filename;
+
+                // Free memory after each resize
+                unset($resized);
+            }
+
+            // Free memory
+            unset($image);
+
+            return $variants;
+        } catch (\Exception $e) {
+            // If resizing fails (e.g., unsupported format or memory issue), return empty array
+            // The file will still be uploaded, just without resized versions
+            return [];
         }
-
-        return $variants;
     }
 }

@@ -27,6 +27,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $checksum = hash_file('md5', $file->getRealPath());
         $mimeType = $file->getMimeType();
 
+        $resizedPaths = [];
         if (strpos($mimeType, 'image') !== false) {
             $resizedPaths = generate_resized_versions($file, $mimeType);
         }
@@ -35,13 +36,19 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $extension = get_file_extension($file);
         $storageDisk = config('filesystems.default');
         $directory = "uploads/{$mimeType}";
-        $storedName = $baseName;
 
-        // Check for name conflict
+        // Ensure unique name in database - add random suffix if needed
+        $storedName = $baseName;
         $counter = 0;
+        while (File::where('name', $storedName)->exists()) {
+            $counter++;
+            $storedName = $baseName . '-' . \Illuminate\Support\Str::random(8);
+        }
+
+        // Check for storage path conflict
         while (\Illuminate\Support\Facades\Storage::disk($storageDisk)->exists("{$directory}/{$storedName}.{$extension}")) {
             $counter++;
-            $storedName = $baseName . '-' . \Illuminate\Support\Str::random(4);
+            $storedName = $baseName . '-' . \Illuminate\Support\Str::random(8);
         }
 
         $filePath = $file->storeAs($directory, "{$storedName}.{$extension}", $storageDisk);
