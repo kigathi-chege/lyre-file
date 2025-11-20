@@ -23,7 +23,7 @@
     "laravel 12"
   ],
   "license": "MIT",
-  "version": "1.2.13",
+  "version": "1.2.14",
   "autoload": {
     "psr-4": {
       "Lyre\\File\\": "src/"
