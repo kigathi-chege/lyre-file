@@ -4,7 +4,7 @@ namespace Lyre\File\Filament\RelationManagers;
 
 use Lyre\File\Filament\Resources\FileResource;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -22,7 +22,7 @@ class FilesRelationManager extends RelationManager
 {
     protected static string $relationship = 'files';
 
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return FileResource::form($form);
     }

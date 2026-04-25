@@ -8,7 +8,7 @@ use Lyre\File\Filament\Resources\FileResource\RelationManagers;
 use Illuminate\Database\Eloquent\Collection;
 use Lyre\File\Models\File;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -22,13 +22,17 @@ class FileResource extends Resource
 {
     protected static ?string $model = File::class;
 
-    protected static ?string $navigationIcon = 'gmdi-folder-open';
+    protected static \BackedEnum|string|null $navigationIcon = 'gmdi-folder-open';
 
-    protected static ?string $navigationGroup = 'Content';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Content';
+    }
+
 
     protected static ?int $navigationSort = 17;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $form): Schema
     {
         return $form
             ->schema([
@@ -142,11 +146,11 @@ class FileResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                \Filament\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()
                         ->action(function ($records, $action): void {
                             collect($records)->each(fn(File $record) => $record->attachments()->delete());
 

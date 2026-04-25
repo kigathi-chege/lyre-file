@@ -7,14 +7,14 @@ use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use FilamentTiptapEditor\TiptapEditor;
 
 class EditFile extends EditRecord
 {
     protected static string $resource = FileResource::class;
 
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return $form
             ->schema([

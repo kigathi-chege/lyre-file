@@ -5,7 +5,7 @@ namespace Lyre\File\Livewire;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Livewire\Component;
 use Lyre\File\Repositories\Contracts\FileRepositoryInterface;
 
@@ -28,7 +28,7 @@ class FileGallery extends Component implements HasForms
         $this->form->fill();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return $form
             ->schema([

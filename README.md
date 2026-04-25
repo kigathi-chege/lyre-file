@@ -27,7 +27,7 @@ use HasFile;
 
 ### Dependencies
 
-Lyre Content depends on [Lyre](https://packagist.org/packages/lyre/lyre) and [Laravel Filament](https://filamentphp.com/). To complete installation, especially if your require the functionalities from Laravel Filament, follow these additional commands:
+Lyre File depends on [Lyre](https://packagist.org/packages/lyre/lyre) and [Laravel Filament](https://filamentphp.com/). To complete installation, especially if you require Filament functionality, follow these additional commands:
 
 ```bash
 php artisan filament:install --panels
@@ -47,7 +47,7 @@ To Discover Lyre File Filament Resources on your Filament dashboard, add the Lyr
 use Lyre\File\Filament\Plugins\LyreFileFilamentPlugin;
 
 $panel->plugins([
-    new LyreFileFilamentPlugin(),
+    LyreFileFilamentPlugin::make(),
 ]);
 ```
 

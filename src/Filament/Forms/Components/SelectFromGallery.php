@@ -16,7 +16,7 @@ class SelectFromGallery extends Field
 
     protected string $view = 'lyre.file::forms.components.select-from-gallery';
 
-    public static function make(string $name): static
+    public static function make(?string $name = null): static
     {
         $static = app(static::class, ['name' => $name]);
         $static->configure();

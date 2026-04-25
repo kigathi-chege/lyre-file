@@ -3,7 +3,7 @@
 namespace Lyre\File\Filament\Actions\TiptapEditor;
 
 use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
