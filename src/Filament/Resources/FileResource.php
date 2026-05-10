@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Contracts\View\View;
+use UnitEnum;
 
 class FileResource extends Resource
 {
@@ -24,11 +25,10 @@ class FileResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'gmdi-folder-open';
 
-    public static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): string | UnitEnum | null
     {
         return 'Content';
     }
-
 
     protected static ?int $navigationSort = 17;
 
