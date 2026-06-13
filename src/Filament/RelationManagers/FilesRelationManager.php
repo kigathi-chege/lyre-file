@@ -29,6 +29,8 @@ class FilesRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $prefix = config('lyre.table_prefix');
+
         return $table
             ->recordTitleAttribute('name')
             ->columns(FileResource::table($table)->getColumns())
@@ -37,6 +39,6 @@ class FilesRelationManager extends RelationManager
             ])
             ->striped()
             ->deferLoading()
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort("{$prefix}files.created_at", 'desc');
     }
 }
