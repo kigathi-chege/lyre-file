@@ -1,7 +1,7 @@
 {{-- <x-filament-panels::page> --}}
 
 <div x-data="{
-    selectedFiles: @entangle('selectedFiles'),
+    selectedFiles: $wire.entangle('selectedFiles'),
     toggleSelection(fileId) {
         if (this.selectedFiles.includes(fileId)) {
             this.selectedFiles = this.selectedFiles.filter(id => id !== fileId);

@@ -13,7 +13,16 @@
         $watch('selectedFiles', () => {
             this.state = this.selectedFiles.map(file => file.id);
         });
-    }" x-restore="selectedFiles">
+    }"
+        x-on:lyre-file-gallery-selected.window="
+            if ($event.detail.statePath !== '{{ $getStatePath() }}') {
+                return;
+            }
+
+            selectedFiles = $event.detail.files ?? [];
+            state = selectedFiles.map(file => file.id);
+            $dispatch('close-modal', { id: '{{ $modalId }}' });
+        ">
         <div
             class="fi-fo-field-wrp rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-primary-400 hover:shadow-md dark:border-white/10 dark:bg-gray-900 dark:hover:border-primary-500"
         >
@@ -74,22 +83,7 @@
                 Browse your gallery, preview media, or upload something new without leaving the form.
             </x-slot>
 
-            @livewire('file-gallery', ['selectedFiles' => $getSelectedFiles(), 'multiple' => $multiple, 'modalId' => $modalId])
+            @livewire('file-gallery', ['selectedFiles' => $getSelectedFiles(), 'multiple' => $multiple, 'modalId' => $modalId, 'statePath' => $getStatePath()], key($modalId))
         </x-filament::modal>
     </div>
-
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.directive('restore', (el, {
-                expression
-            }, {
-                evaluate
-            }) => {
-                el.addEventListener('filesSelected', (event) => {
-                    const files = event.detail.files;
-                    evaluate(`${expression} = ${JSON.stringify(files)}`);
-                });
-            })
-        });
-    </script>
 </x-dynamic-component>

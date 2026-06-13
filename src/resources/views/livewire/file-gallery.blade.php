@@ -4,8 +4,9 @@
     tempSelectedFiles: @js($selectedFiles),
     selectedFiles: @js($selectedFiles),
     multiple: @js($multiple),
-    previousPage: @entangle('previousPage'),
-    nxtPage: @entangle('nxtPage'),
+    statePath: @js($statePath),
+    previousPage: $wire.entangle('previousPage'),
+    nxtPage: $wire.entangle('nxtPage'),
     toggleSelection(fileId, fileName, fileMime, fileLink) {
         if (this.tempState == null) {
             this.tempState = []
@@ -24,8 +25,13 @@
     },
     selectFiles() {
         this.state = this.tempState;
-        this.selectedFiles = this.tempSelectedFiles;
-        $dispatch('filesSelected', { files: this.selectedFiles });
+        this.selectedFiles = [...this.tempSelectedFiles];
+        window.dispatchEvent(new CustomEvent('lyre-file-gallery-selected', {
+            detail: {
+                statePath: this.statePath,
+                files: this.selectedFiles,
+            },
+        }));
     },
     refreshState(uploadedFile = null) {
         if (uploadedFile) {
@@ -140,7 +146,7 @@
 
             <div class="flex flex-wrap justify-end gap-3">
                 @if (!$addNew)
-                    <x-filament::button @click="selectFiles(); $dispatch('close-modal', { id: @js($modalId) })">
+                    <x-filament::button @click="selectFiles()">
                         Select Files
                     </x-filament::button>
                 @else

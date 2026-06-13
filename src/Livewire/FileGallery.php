@@ -21,13 +21,15 @@ class FileGallery extends Component implements HasForms
     public array $files = [], $selectedFiles = [];
     public bool $multiple = false, $previousPage = false, $nxtPage = false;
     public string $modalId = 'select-file';
+    public string $statePath = 'files';
     public $state;
 
-    public function mount(array $selectedFiles = [], bool $multiple = false, string $modalId = 'select-file')
+    public function mount(array $selectedFiles = [], bool $multiple = false, string $modalId = 'select-file', string $statePath = 'files')
     {
         $this->selectedFiles = $selectedFiles;
         $this->multiple = $multiple;
         $this->modalId = $modalId;
+        $this->statePath = $statePath;
         $this->loadFiles();
         $this->form->fill();
     }
