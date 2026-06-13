@@ -2,6 +2,7 @@
 
     @php
         $multiple = $getMultiple();
+        $modalId = 'select-file-' . \Illuminate\Support\Str::slug($getStatePath(), '-');
     @endphp
 
     <div x-data="{
@@ -13,29 +14,67 @@
             this.state = this.selectedFiles.map(file => file.id);
         });
     }" x-restore="selectedFiles">
-        <x-filament::button color="gray" size="md" class="w-full px-3 py-1/5" alignment="start"
-            x-on:click="$dispatch('open-modal', { id: 'select-file' })">
-            <div class="inset-0 flex flex-row items-center justify-start px-3 py-1/5 text-gray-950 font-normal">
-                <template x-if="selectedFiles.length > 0">
-                    <div class="flex flex-row items-center justify-center gap-2 flex-wrap">
-                        {{-- TODO: Kigathi - July 19 2025 - Implement file previews as in file-gallery.blade --}}
-                        <template x-for="file in selectedFiles">
-                            <img :src="file.link" alt="i" class="h-16 w-16 rounded-md object-cover">
-                        </template>
-                    </div>
-                </template>
-                <template x-if="selectedFiles.length == 0">
-                    <img src="{{ asset('lyre/file/placeholder.webp') }}" alt="i"
-                        class="h-16 w-16 rounded-md object-cover">
-                </template>
-            </div>
-        </x-filament::button>
+        <div
+            class="fi-fo-field-wrp rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-primary-400 hover:shadow-md dark:border-white/10 dark:bg-gray-900 dark:hover:border-primary-500"
+        >
+            <button
+                type="button"
+                class="flex w-full items-start gap-4 rounded-2xl p-4 text-left outline-none"
+                x-on:click="$dispatch('open-modal', { id: '{{ $modalId }}' })"
+            >
+                <div class="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-white/10">
+                    <template x-if="selectedFiles.length > 0">
+                        <img :src="selectedFiles[0]?.link" alt="Selected file preview" class="h-full w-full object-cover">
+                    </template>
 
-        <x-filament::modal id="select-file" width="6xl">
+                    <template x-if="selectedFiles.length === 0">
+                        <img src="{{ asset('lyre/file/placeholder.webp') }}" alt="No file selected"
+                            class="h-full w-full object-cover">
+                    </template>
+                </div>
+
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-950 dark:text-white">
+                                {{ $multiple ? 'Selected files' : 'Selected file' }}
+                            </p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                <span x-show="selectedFiles.length === 0">Choose from the gallery or upload a new file.</span>
+                                <span x-show="selectedFiles.length > 0" x-text="selectedFiles.length === 1
+                                    ? (selectedFiles[0]?.name ?? '1 file selected')
+                                    : `${selectedFiles.length} files selected`"></span>
+                            </p>
+                        </div>
+
+                        <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                            Browse
+                        </span>
+                    </div>
+
+                    <template x-if="selectedFiles.length > 1">
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <template x-for="file in selectedFiles.slice(0, 6)" :key="file.id">
+                                <span class="inline-flex max-w-full items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700 dark:bg-primary-500/10 dark:text-primary-300">
+                                    <span class="truncate" x-text="file.name"></span>
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </button>
+        </div>
+
+        <x-filament::modal id="{{ $modalId }}" width="7xl">
             <x-slot name="heading">
-                {{-- Select File --}}
+                Select {{ $multiple ? 'Files' : 'File' }}
             </x-slot>
-            @livewire('file-gallery', ['selectedFiles' => $getSelectedFiles(), 'multiple' => $multiple])
+
+            <x-slot name="description">
+                Browse your gallery, preview media, or upload something new without leaving the form.
+            </x-slot>
+
+            @livewire('file-gallery', ['selectedFiles' => $getSelectedFiles(), 'multiple' => $multiple, 'modalId' => $modalId])
         </x-filament::modal>
     </div>
 
